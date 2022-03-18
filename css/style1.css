@@ -1,0 +1,20 @@
+*{
+    text-decoration: none;
+    box-sizing: border-box;
+}
+.fab{
+    font-size: 40px;
+    
+}
+.fa-facebook{
+    color: blue;
+}
+.fa-twitter{
+    color: aquamarine;
+}
+.fa-whatsapp{
+    color: rgb(24, 238, 24);
+}
+.news h1 {
+    border-bottom:2px solid red ;
+}
