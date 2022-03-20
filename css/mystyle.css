@@ -1,6 +1,9 @@
 *{
     text-decoration: none;
     box-sizing: border-box;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 .fab{
     font-size: 40px;

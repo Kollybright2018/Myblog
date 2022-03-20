@@ -1,0 +1,28 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.container-fluid{
+    padding-left: 0 !important;
+}
+
+
+.icon{
+    font-size: 25px;
+    color: wheat;
+}
+.icon-t{
+    font-weight: 500;
+    color: white;
+    font-size: 20px;
+}
+.bx-icon{
+    font-size: 50px;
+}
+.bx-text{
+    font-size: 40px;
+    font-weight: 900;
+}
+.sidebar{
+    height: 100%;
+}

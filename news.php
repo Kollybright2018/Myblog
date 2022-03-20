@@ -25,6 +25,7 @@
                 </div>
   
                 <!-- News Content  -->
+                <!-- News Content -->
         <div class="col-md-10 col-sm-10 border">
             <span>
                 Posted By : <i>Admin </i> <br>
@@ -49,38 +50,69 @@
             Exercitationem expedita aliquid, corrupti voluptate officiis dicta fuga quidem eum quae repellendus odio nulla, hic amet suscipit repudiandae, 
             vero dolorum fugiat itaque voluptates aut dignissimos omnis nostrum quod nemo! Odit.
         </p>
+
+        <!-- Related Post -->
         <div class="row justify-content-center">
         <h2>Related Post</h2>    
-        <div class="col-5">
+    
+        <!-- post -->
+            <div class="col-md-5 col-sm-10">
             <div class="row"> 
-                
-                <div class="col-md-4">
-    <a href="#"><img src="images/smiling-lady.jpg" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
-          </div>
-                <div class="col-md-8">
-                    <h5>Another problem just occured with our education system in nigeria</h5>
-                </div>
-               
-            </div>
-            </div>
-
-
-            <div class="col-5">
-            <div class="row"> 
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-10">
                      <a href="#"><img src="images/smiling-lady.jpg" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
                 </div>
-<div class="col-md-9">
-    <a href=""><h5>Another problem just occured with our education system in nigeria</h5></a>
-</div>              
-                    
-               
-               
+            <div class="col-md-9 col-sm-10 ">
+                <a href=""><h5>Another problem just occured with our education system in nigeria</h5></a>
+                    </div>              
             </div>
             </div>
+<!-- //post -->
+
+
+                <!--post  -->
+            <div class="col-md-5 col-sm-10">
+            <div class="row"> 
+                <div class="col-md-3 col-sm-10">
+                     <a href="#"><img src="images/smiling-lady.jpg" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
+                </div>
+            <div class="col-md-9 col-sm-10 ">
+                <a href=""><h5>Another problem just occured with our education system in nigeria</h5></a>
+                    </div>              
+            </div>
+            </div>
+            <!-- //post -->
         </div>
+        <!-- // Related Post -->
+        <hr>
+    <!-- comment  -->
+    <div class="row my-4 justify-content-center">
+        <h2 class="badges bg-danger">Post  A comment</h2>
+
+        <div class="col-md-10">  <form action="" class="form">
+            <div class="form-group mb-3">
+                <label for="">Full Name:</label>
+                <input type="text" class="form-control " placeholder="Your fullname">
             </div>
-                <!-- News Content -->
+
+            <div class="form-group mb-3">
+                <label for="">Email Address:</label>
+                <input type="text" class="form-control " placeholder="Your fullname">
+            </div>
+            <div class="form-group mb-3">
+                <label for="Comment">Comment</label>
+                <textarea name="comment" id="" cols="30" class="form-control" rows="10"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input  class="btn form-control btn-success" value="Comment" type="submit">
+            </div>
+        </form> </div>
+       
+    </div>
+    <!-- //comment -->
+            </div>
+                <!--// News Content -->
+
             <!-- right sidebar -->
        <?php
        include('inc/rightbar.php')
@@ -97,6 +129,7 @@
     <?php
     include('inc/footer.php');
     ?>
+
     </div>
 
     <!-- //container-Fliud -->
