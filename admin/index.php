@@ -28,13 +28,13 @@ $get =$select -> get_result();
 // echo $get['admin_name']. '<br>' ;
        
         if ($count>0) {
-             $fetch= $get->fetch_assoc;
+             $fetch= $get->fetch_assoc();
                 $_SESSION['id'] =$fetch['admin_id'];
                 $_SESSION['fname'] =$fetch['admin_name'];
                 $_SESSION['email'] =$fetch['admin_email'];
                 $_SESSION['pwd']    =$fetch['admin_password'];
-                $_SESSION['gender'] =$fetch['gender'];
                 $_SESSION['image'] =$fetch['admin_image'];
+
                 header('location:dashboard.php');
          
         }else {

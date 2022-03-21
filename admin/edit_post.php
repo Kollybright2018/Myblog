@@ -9,6 +9,30 @@ if (!$_SESSION) {
   $error = [];
   $message;
 
+
+      if (isset($_POST['update'])) {
+     if ( empty($_POST['category']) ) {
+            $error['empty'] = "The Field cannot empty";
+        }else {
+            $category = treat($_POST['category']) ;
+            $select = $dbc -> prepare (" SELECT * FROM category where cart_name = ? ");
+            $select -> bind_param("s", $category);
+            $select -> execute();
+            $result = $select -> get_result();
+            $count = $result -> num_rows;
+            // die;
+            if ($count == 0 ) {
+                $update = $dbc -> prepare("UPDATE category SET cart_name = ? WHERE cart_id = ? ");
+                $update -> bind_param("si", $category, $cart_id );
+                if ($update -> execute()) {
+                    $message = "Category Updated";
+                    header('location:category.php');
+                }else {}
+                }else {
+                $error['already added'] = " Category Already Added";
+            }
+} }
+
   if (isset($_POST['submit'])) {
   
     $image =$_FILES['image']['tmp_name'];

@@ -3,11 +3,10 @@ session_start();
 if (!$_SESSION) {
     header('location:index.php');
 }
+
   $error = [];
   $message;
  ?>
-
-
 
 <html lang="en">
 <head>

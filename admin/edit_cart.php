@@ -7,73 +7,44 @@ include_once('inc/db.php');
 require ('function/function.php');
   $error = [];
   $message;
- 
-//   $select = mysqli_query ($dbc, "SELECT * FROM category ");
-//   $fetch = mysqli_fetch_assoc($select);
-//   print_r($fetch);
-//   die() ;
-// delete Category
-if (isset($_GET['delete'])) {
-  $cart_id = $_GET['delete'];
-  $delete=$dbc -> prepare("DELETE FROM category WHERE cart_id = ? ") ;
-  $delete -> bind_param("i", $cart_id);
-  if ($delete ->execute()) {
-     $message  = "Category Deleted Succefully";
-     $delete -> close();
-  }  
-  
-}
 
-// Edit 
-if (isset($_GET['edit'])) {
-    $cart_id = $_GET['edit'];
-    if (isset($_POST['update' ])) {
-        if ($_POST['category']==='') {
+// Edit
+$cart_id = $_GET['edit'];
+// $select = $dbc -> prepare (" SELECT * FROM category where cart_id = ? ");
+// $select -> bind_param("i", $cart_id);
+// $select -> execute();
+// $result = $select -> get_result();
+// $count = $result -> fetch_assoc;
+
+$select =mysqli_query($dbc, "SELECT * FROM  category where cart_id = '$cart_id' " );
+$fetch = mysqli_fetch_array($select);
+$name = $fetch['cart_name'];
+
+
+// $cart_name = $get['cart_name'];
+
+    if (isset($_POST['update'])) {
+     if ( empty($_POST['category']) ) {
             $error['empty'] = "The Field cannot empty";
-        }
-        else{
-            $category = treat($_POST['category']);
-            $update = $dbc -> prepare("UPDATE category SET cart_name = ? WHERE cart_id = ? ");
-            $update -> bind_param("si", $category, $cart_id );
-            if ($update -> execute()) {
-                $message = "Category Updated";
-            }
-        }
-    }
-    $delete=$dbc -> prepare("DELETE FROM category WHERE cart_id = ? ") ;
-    $delete -> bind_param("i", $cart_id);
-    if ($delete ->execute()) {
-       $message  = "Category Deleted Succefully";
-       $delete -> close();
-    }  
-    
-  }
-
-if (isset($_POST['submit'])) {
-    if ($_POST['category']=="") {
-        $error['empty'] = "Field cannot be empty";
-    }else {
-     $category = treat($_POST['category']) ;
-     $select = $dbc -> prepare (" SELECT * FROM category where cart_name = ? ");
-     $select -> bind_param("s", $category);
-     $select -> execute();
-     $result = $select -> get_result();
-     $count = $result -> num_rows;
-
-     if ($count >0 ) {
-         $error['already added'] = " Category Already Added";
-     }else {
-        $insert = $dbc -> prepare("INSERT INTO category (cart_name) VALUES( ? ) ");
-        $insert -> bind_param("s", $category);
-        if ($insert -> execute()) {
-       $message = "Category Added Successfully"; 
         }else {
-    
-        }    
-     }
-
-    }
-} 
+            $category = treat($_POST['category']) ;
+            $select = $dbc -> prepare (" SELECT * FROM category where cart_name = ? ");
+            $select -> bind_param("s", $category);
+            $select -> execute();
+            $result = $select -> get_result();
+            $count = $result -> num_rows;
+            // die;
+            if ($count == 0 ) {
+                $update = $dbc -> prepare("UPDATE category SET cart_name = ? WHERE cart_id = ? ");
+                $update -> bind_param("si", $category, $cart_id );
+                if ($update -> execute()) {
+                    $message = "Category Updated";
+                    header('location:category.php');
+                }else {}
+                }else {
+                $error['already added'] = " Category Already Added";
+            }
+} }
 
 ?>
 <html lang="en">
@@ -105,35 +76,30 @@ if (isset($_POST['submit'])) {
 
         <!-- container -->
         <div class="container">
-            <!-- modal button -->
-            <button class="btn btn-success  my-2" data-bs-toggle="modal" data-bs-target="#mymodal" >Add Category</button>
-        <table class="table tabel-bordered table-striped table-hover table-dark">
-            <thead>
-            <tr>
-                <th>S/N</th>
-                <th>Categories</th>
-                <th class="text-center" colspan="2">Action</th>            
-            </tr>  
-            </thead>
-            <tbody>
-                <?php
-                    $select = mysqli_query ($dbc, "SELECT * FROM category ");
-                $i=1;
-                foreach ($select as $cate) {
-                    $cat_name = $cate['cart_name'];
-                    ?>
-                <tr>
-                    <td><?php echo $i ?></td>
-                    <td><?php echo $cat_name ?> </td>
-                    <td class="text-center"> <a href="category.php?edit=<?php echo $cate['cart_id']; ?>" data-bs-toggle="modal" data-bs-target="#editmodal"  class="btn btn-success"> <i class= "fas fa-pen text-success text-dark"></i> Edit</a></td>
-                    <td class="text-center">  <a href="category.php?delete=<?php echo $cate['cart_id']; ?> " class="btn btn-danger " > <i class=" fas fa-trash text-danger text-dark"></i> Delete</a></td>
-                </tr>
-                <?php
-                 $i++;
-                 };
-                ?>
-            </tbody>
-        </table>
+            <div class="row justify-content-start">
+                <div class="col-md-4 mt-5">
+                   
+                    <form action="" method="POST" class="form mt-5">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Update The category</h4>
+                            </div>
+                            <div class="card-body">
+                                 <div class="form-group">
+                            <input type="text" name="category" class="form-control" value=" <?php echo $name ?> " id="">
+                                     </div>
+                            </div>
+                          <div class="card-footer">
+                               <div class="form-group mt-3">
+                            <input name="update" type="submit" class="btn btn-primary" value="Update">
+                        </div>
+                          </div>  
+                        </div>
+                   
+                       
+                    </form>
+                </div>
+            </div>
         </div>
         <!-- //container -->
       </div>
@@ -143,85 +109,7 @@ if (isset($_POST['submit'])) {
 
   </div>
 
-
-  <!--Edit modal -->
-  <div class="modal" id="editmodal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                        <h4 class="modal-title">Add New Category</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-
-                <div class="modal-body">
-                    <?php
-                    if (isset($_GET['edit'])) {
-                    $cart_id = $_GET['edit'] ;
-                //     $select = $dbc -> prepare("SELECT FROM category WHERE cart_id = ? ");
-                //     $select -> bind_param("i", $cart_id);
-                //     $select -> execute();
-                //     $result= $select -> get_result();
-                //    $get = $result -> fetch_assoc();
-                //     $cart_name = $get['cart_name'];
-                      
-
-                    
-                    ?>
-                    <form action="" method="post" class="form">
-                        <div class="form-group">
-                            <input type="text" name="category" class="form-control" value="<?php echo $cart_id ?> " id="">
-                        </div>
-                        <div class="form-group mt-3">
-                            <input name="update" type="submit" class="btn btn-success" value="Update">
-                        </div>
-                    </form>
-
-                    <?php
-                    }
-                    ?>
-                </div>
-
-                <div class="modal-footer">
-
-                <button data-bs-dismiss="modal" class="btn btn-danger"> Close </button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-  <!-- //edit modal -->
-
-
-
-  <!-- modal -->
-    <div class="modal" id="mymodal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                        <h4 class="modal-title">Add New Category</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-
-                <div class="modal-body">
-                    <form action="" method="post" class="form">
-                        <div class="form-group">
-                            <input type="text" name="category" class="form-control" placeholder="Category" id="">
-                        </div>
-                        <div class="form-group mt-3">
-                            <input name="submit" type="submit" class="btn btn-primary" value="Add">
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-
-                <button data-bs-dismiss="modal" class="btn btn-danger"> Close </button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-  <!-- //modal -->
+  
   <script src="../bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

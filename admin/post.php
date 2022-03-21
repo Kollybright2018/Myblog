@@ -1,57 +1,22 @@
 <?php
 session_start();
-// include_once('include/db.php');
-// require ('include/function.php');
-//   include('include/head.php');
+include_once('inc/db.php');
+require ('function/function.php');//   include('include/head.php');
   $error = [];
   $message;
- 
-// if (isset ($_POST['login'])) {
-//     if (empty($_POST['email'])) {
-//         $error['email-e']= "your Email cannot be empty";
-// }else {
-//     $email = treat($_POST['email']);
-//    $check = mysqli_query($dbc, "SELECT email FROM users ");
-// }
-// if (empty($_POST['pwd'])) {
-//     $error['pwd-e']= "Password cannot empty";
-// }else {
-// $pwd = treat($_POST['pwd']);
-// }
-//     if (! $error) {
-//         $select = mysqli_query($dbc, "SELECT * FROM users WHERE email= '$email' AND password = '$pwd' ");
-       
-//         if (mysqli_num_rows($select)>0) {
-//              $fetch= mysqli_fetch_array($select);
-//              $get_role= $fetch['role'];
-//             if ($get_role=='user') {
-//                 $_SESSION['id'] =$fetch['id'];
-//                 $_SESSION['fname'] =$fetch['firstname'];
-//                 $_SESSION['lname'] =$fetch['lastname'];
-//                 $_SESSION['email'] =$fetch['email'];
-//                 $_SESSION['no'] =$fetch['phone'];
-//                 $_SESSION['gender'] =$fetch['gender'];
-//                 $_SESSION['image'] =$fetch['image'];
-//                 $_SESSION['role'] =$fetch['role'];
-//                 header('location:id_card.php');
-//             }else {
-//                 $_SESSION['id'] =$fetch['id'];
-//                 $_SESSION['fname'] =$fetch['firstname'];
-//                 $_SESSION['lname'] =$fetch['lastname'];
-//                 $_SESSION['email'] =$fetch['email'];
-//                 $_SESSION['no']    =$fetch['no'];
-//                 $_SESSION['gender'] =$fetch['gender'];
-//                 $_SESSION['image'] =$fetch['image'];
-//                 $_SESSION['role'] =$fetch['role'];
-//                 header('location:admin.php');
-//             }
-//         }else {
-//           $message= "User Name or password incorrect";
-//         }
-//     }else{
-      
-//     }
-// }
+
+//   delete
+
+if (isset($_GET['delete'])) {
+    $p_id = $_GET['delete'];
+    $delete=$dbc -> prepare("DELETE FROM post WHERE p_id = ? ") ;
+    $delete -> bind_param("i", $p_id);
+    if ($delete ->execute()) {
+       $message  = "Post Deleted Succefully";
+       $class= "danger";
+       $delete -> close();
+    }
+}  
 ?>
 
 
@@ -91,8 +56,8 @@ require('inc/head.php')
         <!-- container -->
         <div class="container">
             <div class="row justify-content-center">   
-                <div class="col-md-12 table-hover table-responsive">
-                     <table class="table  table-bordered table-striped">
+                <div class="col-md-12 table-responsive">
+                     <table class="table   table-hover table-dark table-bordered table-striped">
             <thead>
                 <tr>
                 <th>S/N</th>
@@ -101,24 +66,42 @@ require('inc/head.php')
                 <th>Image</th>
                 <th>Category</th>
                 <th>Keywords</th>
-                <th>Admin</th>
+                <th>Author</th>
                 <th>Date</th>
                 <th class="text-center" colspan="2">Action</th>
                 </tr>  
             </thead>
             <tbody>
+                <?php
+                $select = $dbc -> query("SELECT * FROM post") ;
+                $i=1;
+                foreach ($select as $post) :
+                    $p_id = $post['p_id'] ;
+                    $title = $post['p_title'] ;
+                    $content = $post['p_content'] ;
+                    $image = $post['p_image'] ;
+                    $category = $post['cart_id'] ;
+                    $keyword = $post['p_keywords'] ;
+                    $author = $post['p_author'] ;
+                    $date = $post['p_date'] ;
+             
+                ?>
                 <tr>
-                    <td>1</td>
-                    <td>A yahooo</td>
-                    <td> <p> Lorem ipsum dolor sit amet consectetu Laboriosam a libero aliquid. </p> </td>
-                    <td><img src="images/gb cc.JPG" class="img-fluid" width="80" height="50" alt="" srcset=""></td>
-                    <td>Tech</td>
-                    <td>Yahoo, Technology</td>
-                    <td>kollybright</td>
-                    <td> 20-03-2022</td>
-                    <td> <a href=""> <i class="fas fa-pen text-success"></i> Edit</a></td>
-                    <td><a href=""> <i class="fas fa-trash text-danger"></i> Delete</a></td>
+
+                    <td> <?php echo $i ?></td>
+                    <td> <?php echo $title ?></td>
+                    <td> <p>  <?php echo $content ?> </p> </td>
+                    <td><img src="<?php echo $image ?>" class="img-fluid" width="80" height="50" alt="" srcset=""></td>
+                    <td> <?php echo $category ?></td>
+                    <td> <?php echo $keyword ?></td>
+                    <td> <?php echo $author ?></td>
+                    <td>  <?php echo $date ?></td>
+                    <td> <a href="post.php?delete= <?php echo $p_id ?>"> <i class="fas fa-pen text-success"></i> Edit</a></td>
+                    <td><a href="post.php?delete= <?php echo $p_id ?>"> <i class="fas fa-trash text-danger"></i> Delete</a></td>
                 </tr>
+                <?php $i++; 
+            endforeach; 
+            ?>
             </tbody>
         </table>
                 </div>
