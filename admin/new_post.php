@@ -3,9 +3,12 @@ session_start();
 
 include_once('inc/db.php');
 require ('function/function.php');
+
 if (!$_SESSION) {
     header('location:index.php');
 }
+
+
   $error = [];
   $message;
 
@@ -59,7 +62,8 @@ if (empty($error)) {
 
 }
   }
-
+// print_r($_POST);
+// die;
 ?>
 
 

@@ -15,6 +15,7 @@ if (isset($_GET['delete'])) {
        $message  = "Post Deleted Succefully";
        $class= "danger";
        $delete -> close();
+       header('location:post.php');
     }
 }  
 ?>
@@ -55,8 +56,9 @@ require('inc/head.php')
 
         <!-- container -->
         <div class="container">
-            <div class="row justify-content-center">   
+            <div class="row justify-content-center"> 
                 <div class="col-md-12 table-responsive">
+                <a href="new_post.php" class="btn btn-success m-3"> Add Post </a>  
                      <table class="table   table-hover table-dark table-bordered table-striped">
             <thead>
                 <tr>
@@ -69,6 +71,7 @@ require('inc/head.php')
                 <th>Author</th>
                 <th>Date</th>
                 <th class="text-center" colspan="2">Action</th>
+                <!-- <th>Status</th> -->
                 </tr>  
             </thead>
             <tbody>
@@ -84,20 +87,21 @@ require('inc/head.php')
                     $keyword = $post['p_keywords'] ;
                     $author = $post['p_author'] ;
                     $date = $post['p_date'] ;
-             
-                ?>
+
+?>
                 <tr>
 
                     <td> <?php echo $i ?></td>
                     <td> <?php echo $title ?></td>
-                    <td> <p>  <?php echo $content ?> </p> </td>
+                    <td> <p>   <?php  echo substr($content, 0, 100 ) . "........" ?> </p> </td>
                     <td><img src="<?php echo $image ?>" class="img-fluid" width="80" height="50" alt="" srcset=""></td>
                     <td> <?php echo $category ?></td>
                     <td> <?php echo $keyword ?></td>
                     <td> <?php echo $author ?></td>
                     <td>  <?php echo $date ?></td>
-                    <td> <a href="post.php?delete= <?php echo $p_id ?>"> <i class="fas fa-pen text-success"></i> Edit</a></td>
-                    <td><a href="post.php?delete= <?php echo $p_id ?>"> <i class="fas fa-trash text-danger"></i> Delete</a></td>
+                    <td> <a href="edit_post.php?edit=<?php echo $p_id ?>"> <i class="fas fa-pen text-success"></i> Edit</a></td>
+                    <td><a href="post.php?delete=<?php echo $p_id ?>"> <i class="fas fa-trash text-danger"></i> Delete</a></td>
+                    <!-- <td><a href="post.php?publish=<?php echo $p_id ?>"> <i class="fas fa-pen-alt text-danger"></i> Approve</a></td> -->
                 </tr>
                 <?php $i++; 
             endforeach; 

@@ -8,40 +8,21 @@ if (!$_SESSION) {
 }
   $error = [];
   $message;
+$p_id = $_GET['edit']; 
+
+// select data
+$select = $dbc -> prepare("SELECT * FROM post WHERE p_id = ?");
+$select -> bind_param("i", $p_id);
+$select -> execute();
+$result = $select -> get_result() ;
 
 
-      if (isset($_POST['update'])) {
-     if ( empty($_POST['category']) ) {
-            $error['empty'] = "The Field cannot empty";
-        }else {
-            $category = treat($_POST['category']) ;
-            $select = $dbc -> prepare (" SELECT * FROM category where cart_name = ? ");
-            $select -> bind_param("s", $category);
-            $select -> execute();
-            $result = $select -> get_result();
-            $count = $result -> num_rows;
-            // die;
-            if ($count == 0 ) {
-                $update = $dbc -> prepare("UPDATE category SET cart_name = ? WHERE cart_id = ? ");
-                $update -> bind_param("si", $category, $cart_id );
-                if ($update -> execute()) {
-                    $message = "Category Updated";
-                    header('location:category.php');
-                }else {}
-                }else {
-                $error['already added'] = " Category Already Added";
-            }
-} }
-
-  if (isset($_POST['submit'])) {
-  
+  if (isset($_POST['update'])) {
     $image =$_FILES['image']['tmp_name'];
     $img_size =$_FILES['image']['size'];
     $basename= basename($_FILES['image']['name']);
     $path= pathinfo($basename, PATHINFO_EXTENSION);
     $img_folder = "images/".$basename;
-
-
 
     if (empty($_POST['title'])) {
          $error['title_e'] = "Title cannot be empty";
@@ -68,25 +49,23 @@ if (!$_SESSION) {
      }
 
 if (empty($error)) {
-  $insert  = $dbc -> prepare("INSERT INTO post (p_title, p_author, p_keywords, p_image, p_content, cart_id, p_status) 
-                        VALUES(?, ?, ?, ?, ?, ?, ?) ");
-  $status = "pending";  
+  $insert  = $dbc -> prepare("UPDATE post set p_title = ?, p_author = ?, p_keywords = ?, p_image = ?, p_content = ?, cart_id = ? 
+                     WHERE  p_id = ? ");  
   $author= $_SESSION['fname'];                    
-  $insert -> bind_param("sssssis", $title, $author, $keyword, $img_folder, $content, $category, $status  );
+  $insert -> bind_param("sssssii", $title, $author, $keyword, $img_folder, $content, $cart_id, $p_id  );
   if ($insert -> execute() ) {
       move_uploaded_file($image, $img_folder);
-      $_SESSION['message'] = " Post Submitted Successfully";
+      $_SESSION['message'] = " Updated Submitted Successfully";
       $_SESSION['class'] = "info";
-      header('location:post.php')   ; 
+      header('location:post.php') ; 
   }
-   
+   }
+  }
 
-}
-  }
+  print_R($_POST);
+die;
 
 ?>
-
-
 <html lang="en">
 <head>
 <?php
@@ -128,41 +107,56 @@ require('inc/head.php')
         <?php endif ?>
        <form action="" enctype="multipart/form-data" method="post">
 
+            <?php
+            foreach ($result as $post) :
+                $id = $post['p_id'];
+                $title = $post['p_title'];
+                $content = $post['p_content'];
+                $image =$post['p_image'];
+                $author =$post['p_author'];
+                $keyword =$post['p_keywords']; 
+                $category =$post['cart_id'];
+            ?>
+
            <div class="form-group">
                <label for=""> Title:</label>
-               <input type="text" class="form-control" name="title" placeholder="title" id="">
+               <input type="text" class="form-control" name="title" value="<?php echo $title ?>" placeholder="title" id="">
            </div>
            <div class="form-group">
                <label for="">Cateogry</label>
                <select name="category" class="form-control" id="">
-                   <option value="">Select Cateogry</option>
+                   <option value="<?php echo $cart_id ?>"> <?php echo $category ?></option>
                    <?php $select = $dbc -> query("SELECT * FROM category") ; 
+
                     foreach ($select as $cart ) :
                         $cart_name= $cart['cart_name'] ;
                         $cart_id = $cart['cart_id'];
                    ?>
-                   <option value="<?php echo $cart_id ?>"><?php echo $cart_id ?></option>
+                   <option value="<?php echo $cart_id ?>"><?php echo $cart_name ?></option>
 
                    <?php endforeach ?>
                </select>
            </div>
            <div class="form-group mt-2">
                <label for="">Keywords</label>
-               <input type="text" name="keyword" id="" class="form-control" placeholder="post keyword">
+               <input type="text" name="keyword" value="<?php echo $keyword ?>" id="" class="form-control" placeholder="post keyword">
            </div>
-
+                        
            <div class="form-group mt-2">
                <label for="">Image</label>
-               <input type="file" name="image" class="form-control">
+               <input type="file" value="<?php echo $image ?>" name="image" class="form-control">
+               <img src="<?php echo $image ?>" width="80" height="50" alt="" srcset="">
            </div>
            <div class="form-group mt-2">
                <label for="">Post Descriptions</label>
-               <textarea name="content" id="" class="form-control" cols="30" rows="10"></textarea>
+               <textarea name="content" value="" id="" class="form-control" cols="30" rows="10"><?php echo $content ?></textarea>
            </div>
            <div class="form-group my-3">
-               <input type="submit" name="submit" class="form-control btn btn-success" value="Submit">
+               <input type="submit" name="update" class="form-control btn btn-info" value="Update">
            </div>
        </form>
+       <?php endforeach
+       ?>
         </div>
         <!-- //container -->
       </div>

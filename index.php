@@ -26,10 +26,25 @@
                 </div>
           
             <!-- Education News -->
+                <?php  
+                 $select = $dbc -> query("SELECT * FROM post") ; 
+          foreach ($select as $post) :
+            $p_id = $post['p_id'] ;
+            $title = $post['p_title'] ;
+            $content = $post['p_content'] ;
+            $image = $post['p_image'] ;
+            $category = $post['cart_id'] ;
+            $keyword = $post['p_keywords'] ;
+            $author = $post['p_author'] ;
+            $date = $post['p_date'] ; 
+        
+        ?>
             <div class="col-md-5 col-sm-10"> 
                 <h2>Education News</h2>
                 <hr>
                 <div class="row justify-content-center">
+       
+        
                 <div class="col-md-4 col-sm-10 gx-0">
 
                     <a href="#"> <img src="images/cute-lady.jpg" class="img-fluid img-thumbnail" alt="Yahoo" width="100" height="100" ></a>  
@@ -60,7 +75,7 @@
                 <hr>
             </div>
             <!-- // Education News -->
-
+<?php endforeach   ?>
             <!-- Sport News -->
             <div class="col-md-5 col-sm-10"> 
                 <h2>Latest News</h2>

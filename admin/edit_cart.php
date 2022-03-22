@@ -15,12 +15,6 @@ $cart_id = $_GET['edit'];
 // $select -> execute();
 // $result = $select -> get_result();
 // $count = $result -> fetch_assoc;
-
-$select =mysqli_query($dbc, "SELECT * FROM  category where cart_id = '$cart_id' " );
-$fetch = mysqli_fetch_array($select);
-$name = $fetch['cart_name'];
-
-
 // $cart_name = $get['cart_name'];
 
     if (isset($_POST['update'])) {
@@ -45,6 +39,8 @@ $name = $fetch['cart_name'];
                 $error['already added'] = " Category Already Added";
             }
 } }
+
+
 
 ?>
 <html lang="en">

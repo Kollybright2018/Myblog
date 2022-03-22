@@ -19,7 +19,7 @@ if (empty($_POST['pwd'])) {
 $pwd = treat($_POST['pwd']);
 }
     if (! $error) {
-        $query = "SELECT * FROM admin WHERE admin_email= ? AND admin_password = ? ";
+ $query = "SELECT * FROM admin WHERE admin_email= ? AND admin_password = ? ";
 $select = $dbc -> prepare ($query);
 $select -> bind_param("ss", $email, $pwd);
 $select -> execute();
@@ -28,21 +28,18 @@ $get =$select -> get_result();
 // echo $get['admin_name']. '<br>' ;
        
         if ($count>0) {
-             $fetch= $get->fetch_assoc();
+                 $fetch= $get->fetch_assoc();
                 $_SESSION['id'] =$fetch['admin_id'];
                 $_SESSION['fname'] =$fetch['admin_name'];
                 $_SESSION['email'] =$fetch['admin_email'];
-                $_SESSION['pwd']    =$fetch['admin_password'];
                 $_SESSION['image'] =$fetch['admin_image'];
-
+                $_SESSION['pwd']    =$fetch['admin_password'];
                 header('location:dashboard.php');
          
         }else {
           $message= "User Name or password incorrect";
         }
-    }else{
-      
-    }
+    }else{}
 }
 ?>
 
