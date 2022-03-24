@@ -1,5 +1,5 @@
 <?php
-session_start();
+require('inc/db.php');
 if (!$_SESSION) {
     header('location:index.php');
 }
@@ -11,7 +11,7 @@ if (!$_SESSION) {
 <html lang="en">
 <head>
 <?php
-require('inc/head.php')
+require('inc/head.php');
 ?>
     <title>Admin Dashboard ||  </title>
 </head>
@@ -29,12 +29,13 @@ require('inc/head.php')
       <!-- //sidebar -->
       <!-- Content -->
       <div class="col-md-10 bg-light border">
-        <div class="row bg-primary d-flex flex-row" >
-            <div>
+      <div class="row bg-primary d-flex  justify-content-start" >
+            <div class="col-5">
                 <p>Home</p>
             </div>
-            <div>
-                <p>Log-Out</p>
+            <div class="col-5 ps-5" >
+            <a href="inc/logout.php"><i class="fas fa-power-off text-light">Log Out</i> </a>   
+        
                <!-- <a href="#" class="link">Log Out</a> -->
             </div>
         </div>
@@ -47,9 +48,9 @@ require('inc/head.php')
                 <div class="col-md-4   ">
                     <div class="row bg-warning py-3 my-2 justify-content-center">
                        <div class="col-md-5  col-sm-10">
-                           <a href="" class="">
+                           <a href="index.php" class="">
                                  <h4 class="m-3 bx-text">Admin</h4>
-                            <p><b>  Kollybright </b></p>
+                            <strong>  <?php echo $_SESSION['fname'] ; ?></strong>
                            </a>
                           
                         </div>
@@ -65,9 +66,13 @@ require('inc/head.php')
           <!--bx  -->
           <div class="col-md-4     ">
                     <div class="row bg-warning py-3 my-2 justify-content-center">
-                       <div class="col-md-5  col-sm-10">
-                           <a href="" class="">
-                                 <h4 class="m-3 bx-text">44</h4>
+                    <?php
+                    $post = mysqli_query ($dbc, "SELECT * FROM post");
+                    $count_p= mysqli_num_rows($post) ;
+                    ?>   
+                    <div class="col-md-5  col-sm-10">
+                           <a href="post.php" class="">
+                                 <h4 class="m-3 bx-text"><?php echo $count_p ?></h4>
                             <p><b>  Total Post </b></p>
                            </a>
                           
@@ -84,7 +89,11 @@ require('inc/head.php')
           <!--bx  -->
           <div class="col-md-4     ">
                     <div class="row bg-warning py-3 my-2 justify-content-center">
-                       <div class="col-md-5  col-sm-10">
+                     <?php
+                    $post = mysqli_query ($dbc, "SELECT * FROM post");
+                    $count_p= mysqli_num_rows($post) ;
+                    ?>    
+                    <div class="col-md-5  col-sm-10">
                            <a href="" class="">
                                  <h4 class="m-3 bx-text">44</h4>
                             <p><b>  Total Post </b></p>
@@ -103,16 +112,20 @@ require('inc/head.php')
            <!--bx  -->
            <div class="col-md-4   ">
                     <div class="row bg-warning py-3 my-2 justify-content-center">
-                       <div class="col-md-5  col-sm-10">
-                           <a href="" class="">
-                                 <h4 class="m-3 bx-text">44</h4>
+                    <?php
+                    $cart = mysqli_query ($dbc, "SELECT * FROM category");
+                    $count_c= mysqli_num_rows($cart);
+                    ?>    
+                    <div class="col-md-5  col-sm-10">
+                           <a href="category.php" class="">
+                                 <h4 class="m-3 bx-text"><?php echo $count_c ?></h4>
                             <p><b>  Total Categories </b></p>
                            </a>
                           
                         </div>
                         <div class="col-md-2  col-sm-10"></div>
                         <div class="col-md-3  col-sm-10">
-                            <a href="">  <i class="fas bx-icon fa-newspaper my-3 pe-5"></i></a>
+                            <a href="category.php">  <i class="fas bx-icon fa-tags my-3 pe-5"></i></a>
                            
                         </div>
                         
@@ -123,16 +136,20 @@ require('inc/head.php')
           <!--bx  -->
           <div class="col-md-4     ">
                     <div class="row bg-warning py-3 my-2 justify-content-center">
-                       <div class="col-md-5  col-sm-10">
-                           <a href="" class="">
-                                 <h4 class="m-3 bx-text">44</h4>
+                    <?php
+                    $comment = mysqli_query ($dbc, "SELECT * FROM comment");
+                    $count_c= mysqli_num_rows($comment);
+                    ?>    
+                    <div class="col-md-5  col-sm-10">
+                           <a href="comment.php" class="">
+                                 <h4 class="m-3 bx-text"><?php echo $count_c ?></h4>
                             <p><b>  Total Comment </b></p>
                            </a>
                           
                         </div>
                         <div class="col-md-2  col-sm-10"></div>
                         <div class="col-md-3  col-sm-10">
-                          <a href="">  <i class="fas bx-icon fa-comment my-3 pe-5"></i></a>
+                          <a href="comment.php">  <i class="fas bx-icon fa-comment my-3 pe-5"></i></a>
                         </div>
                         
                     </div>
@@ -143,7 +160,7 @@ require('inc/head.php')
           <div class="col-md-4     ">
                     <div class="row bg-warning py-3 my-2 justify-content-center">
                        <div class="col-md-6  col-sm-10">
-                           <a href="" class="">
+                           <a href="inc/logout.php" class="">
                                  <h6 class="m-3 bx-text">Log-Out</h6>
                             <p><b>  </b></p>
                            </a>
@@ -151,7 +168,7 @@ require('inc/head.php')
                         </div>
                         <div class="col-md-2  col-sm-10"></div>
                         <div class="col-md-3  col-sm-10">
-                           <a href="#">  <i class="fas bx-icon fa-sign-out-alt my-3 pe-5"></i></a>
+                           <a href="inc/logout.php">  <i class="fas bx-icon fa-power-off my-3 pe-5"></i></a>
                         </div>
                         
                     </div>

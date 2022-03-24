@@ -1,57 +1,49 @@
 <?php
-session_start();
-// include_once('include/db.php');
-// require ('include/function.php');
-//   include('include/head.php');
+ include_once('inc/db.php');
+ require ('function/function.php');
   $error = [];
   $message;
+
  
-// if (isset ($_POST['login'])) {
-//     if (empty($_POST['email'])) {
-//         $error['email-e']= "your Email cannot be empty";
-// }else {
-//     $email = treat($_POST['email']);
-//    $check = mysqli_query($dbc, "SELECT email FROM users ");
-// }
-// if (empty($_POST['pwd'])) {
-//     $error['pwd-e']= "Password cannot empty";
-// }else {
-// $pwd = treat($_POST['pwd']);
-// }
-//     if (! $error) {
-//         $select = mysqli_query($dbc, "SELECT * FROM users WHERE email= '$email' AND password = '$pwd' ");
-       
-//         if (mysqli_num_rows($select)>0) {
-//              $fetch= mysqli_fetch_array($select);
-//              $get_role= $fetch['role'];
-//             if ($get_role=='user') {
-//                 $_SESSION['id'] =$fetch['id'];
-//                 $_SESSION['fname'] =$fetch['firstname'];
-//                 $_SESSION['lname'] =$fetch['lastname'];
-//                 $_SESSION['email'] =$fetch['email'];
-//                 $_SESSION['no'] =$fetch['phone'];
-//                 $_SESSION['gender'] =$fetch['gender'];
-//                 $_SESSION['image'] =$fetch['image'];
-//                 $_SESSION['role'] =$fetch['role'];
-//                 header('location:id_card.php');
-//             }else {
-//                 $_SESSION['id'] =$fetch['id'];
-//                 $_SESSION['fname'] =$fetch['firstname'];
-//                 $_SESSION['lname'] =$fetch['lastname'];
-//                 $_SESSION['email'] =$fetch['email'];
-//                 $_SESSION['no']    =$fetch['no'];
-//                 $_SESSION['gender'] =$fetch['gender'];
-//                 $_SESSION['image'] =$fetch['image'];
-//                 $_SESSION['role'] =$fetch['role'];
-//                 header('location:admin.php');
-//             }
-//         }else {
-//           $message= "User Name or password incorrect";
-//         }
-//     }else{
-      
-//     }
-// }
+//   Delete Comment
+if (isset($_GET['delete'])) {
+      $c_id = $_GET['delete'];
+      $delete=$dbc -> prepare("DELETE FROM comment WHERE c_id = ?  ") ;
+      $delete -> bind_param("i", $c_id);
+      if ($delete ->execute()) {
+         $message  = "Post Deleted Succefully";
+         $class= "danger";
+         header('location:comment.php');
+      }
+}
+
+// Approve
+if (isset($_GET['approve'])) {
+    $c_id = $_GET['approve'];
+    $appr ="approve";
+    $approve = $dbc -> prepare("UPDATE comment SET c_status = ? WHERE c_id= ?") ;
+    $approve-> bind_param("si", $appr, $c_id);
+    if ($approve ->execute()) {
+       $message  = "Comment Approve Succefully";
+       $class= "success";
+       header('location:comment.php');
+         }
+}
+
+
+// pending
+if (isset($_GET['pending'])) {
+    $c_id = $_GET['pending'];
+    $pend ="pending";
+    $pending = $dbc -> prepare("UPDATE comment SET c_status = ? WHERE c_id= ? ") ;
+    $pending-> bind_param("si", $pend, $c_id);
+    if ($pending ->execute()) {
+       $message  = "Comment Disapprove Succefully";
+       $class= "info";
+       header('location:comment.php');
+         }
+}
+
 ?>
 
 
@@ -77,48 +69,65 @@ require('inc/head.php')
       <!-- //sidebar -->
       <!-- Content -->
       <div class="col-md-10 bg-light border">
-        <div class="row bg-primary d-flex flex-row" >
-            <div>
-                <p>Home</p>
+      <div class="row bg-primary " >
+            <div class="col-md-5 p-3">
+                <p><span class="text-light fas fa-home">Home</span> </p>
             </div>
-            <div>
-                <p>Log-Out</p>
+            <div class="col-md-5 p-3 " >
+            <a href="inc/logout.php"><i class="fas fa-power-off text-light">Log Out</i> </a>   
                <!-- <a href="#" class="link">Log Out</a> -->
             </div>
         </div>
 
         <!-- container -->
-        <div class="container">
-        <table class="table bordered stripe">
+        <div class="container ">
+            <div class="table-responsive"> 
+        <table class="table table-bordered table-striped table-hover table-dark">
             <thead>
                 <tr>
                 <th>S/N</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Post Title</th>
-                <th>Category</th>
                 <th>Comment</th>
                 <th>Date</th>
-                <th class="text-center" rowspan="2">Action</th>
-            
+                <th class="text-center" >Action</th>
+                <th>Status</th>
                 </tr>  
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>kolade</td>
-                    <td> <p> Kollybright@gmail.com </p> </td>
-                    <td>A yahooo boy</td>
-                    <td>News</td>
-                    <td>Its cannot not be done pls</td>
-                    <td> 20-03-2022</td>
-                    <td> <a href=""> <i class="fas fa-pen text-success"></i> Edit</a></td>
-                    <td><a href=""> <i class="fas fa-trash text-danger"></i> Delete</a></td>
-                    <td></td>
-                    <td></td>
+            <?php
+            $select = $dbc -> query("SELECT * FROM comment 
+            INNER JOIN post WHERE comment.p_id = post.p_id ") ;
+       $i=1;
+            foreach ($select as $comment) :
+                $c_id = $comment['c_id'] ;
+                $date = $comment['com_date'];
+                $name = $comment['c_name'] ;
+                $email = $comment['c_email'] ;
+                $p_title = $comment['p_title'] ;
+                 $status = $comment['c_status'] ;
+                 $comment = $comment['comment'] ;
+        
+?>
+        <tr>
+                    <td><?php echo $i?></td>
+                    <td><?php echo $name ?></td>
+                    <td> <?php echo $email ?> </td>
+                    <td><?php echo $p_title?></td>
+                    <td><?php echo $comment?></td>
+                    <td> <?php echo $date ?></td>
+                    <td><a href="comment.php?delete=<?php echo $c_id ?> "> <i class="fas fa-trash text-danger"></i> Delete</a></td>
+                     <?php if ($status == "pending"):?>
+                    <td> <a href="comment.php?approve=<?php echo $c_id ?> "> <i class="fas fa-check text-primary"></i> Approve</a>   </td>
+                    <?php else : ?>
+                        <td> <a href="comment.php?pending=<?php echo $c_id ?> "> <i class="fas fa-envelope text-warning"></i> Draft</a>  </td>
+                        <?php endif ?>
                 </tr>
+                <?php $i++; endforeach?>
             </tbody>
         </table>
+        </div>
         </div>
         <!-- //container -->
       </div>

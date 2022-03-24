@@ -1,3 +1,70 @@
+<?php
+require ('./admin/inc/db.php');
+require  ('./admin/function/function.php');
+if (!isset($_GET['news'])) {
+    header('location:index.php');
+}
+$p_id = $_GET['news'];
+  $error = [];
+  $message;
+
+  if (isset($_POST['comment'])) {
+  
+    // $image =$_FILES['image']['tmp_name'];
+    // $img_size =$_FILES['image']['size'];
+    // $basename= basename($_FILES['image']['name']);
+    // $path= pathinfo($basename, PATHINFO_EXTENSION);
+    // $img_folder = "images/".$basename;
+
+    if (empty($_POST['name'])) {
+         $error['name_e'] = "Name cannot be empty";
+      }else {
+        $name = treat($_POST['name']) ;
+      }
+
+      if (empty($_POST['email'])) {
+        $error['email_e'] = "Please Enter YOur mail";
+     }else {
+       $email = treat($_POST['email']) ;
+     }
+
+     if (empty($_POST['comment'])) {
+        $error['comment_e'] = "Comment cannot be empty";
+     }else {
+       $comment = treat($_POST['comment']) ;
+     }
+
+if (empty($error)) {
+  $insert  = $dbc -> prepare("INSERT INTO comment (c_name, c_email, p_id, comment) 
+                        VALUES(?, ?, ?, ?) ");                  
+  $insert -> bind_param("ssis", $name, $email, $p_id, $comment );
+  if ($insert -> execute() ) {
+      $message = " Post Submitted Successfully";
+      $class = "info";
+      header("location:news.php?news=" .$p_id)   ; 
+  }
+   
+}
+  }
+
+// Fetch News Data
+$select = $dbc -> prepare("SELECT * FROM post 
+INNER JOIN category WHERE post.p_id = ? AND post.cart_id = category.cart_id ") ;
+$select -> bind_param("i", $p_id); 
+$select -> execute ();
+$result= $select ->  get_result() ;
+$post = $result -> fetch_assoc();
+$p_id = $post['p_id'] ;
+$title = $post['p_title'] ;
+$content = $post['p_content'] ;
+$image = $post['p_image'] ;
+$category = $post['cart_id'] ;
+$keyword = $post['p_keywords'] ;
+$author = $post['p_author'] ;
+$date = $post['p_date'] ;
+$cart_name = $post['cart_name'];
+
+?>
 <html lang="en">
 <head>
     <?php
@@ -8,6 +75,7 @@
 <body>
  <!-- Navbar -->
  <?php
+  require('inc/header.php');
   require('inc/navbar.php');
  ?>
 <!-- Navbar -->
@@ -26,77 +94,80 @@
   
                 <!-- News Content  -->
                 <!-- News Content -->
-        <div class="col-md-10 col-sm-10 border">
-            <span>
-                Posted By : <i>Admin </i> <br>
-                March 2018, 09:32 Am  <br>
+        <div class="col-md-9 col-sm-10 border">
+                    
+        
+        <span>
+                Posted By : <i> <?php echo $author?> </i> <br>
+                <?php echo $date?>  <br>
 
             </span>
-            <span class="badge bg-danger">Education news</span>
-            <h2> Lorem ipsum dolor, sit amet consectetur adipisicing elit. cere reprehenderit aut dolorum.</h2>
+            <span class="badge bg-danger"> <?php echo $cart_name ?></span>
+            <h2><a href="news.php?news= <?php echo $p_id?>"><?php echo $title?></a> </h2>
 
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Pariatur neque ullam facere sequi 
-                a inventore perferendis et 
-                vel ut quae consequatur, architecto quasi cum dolorem accusantium libero corporis vitae at?</p>
-             
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Pariatur neque ullam facere sequi 
-                a inventore perferendis et 
-                vel ut quae consequatur, architecto quasi cum dolorem accusantium libero corporis vitae at?</p> 
-                <img src="images/cute-lady.jpg" width="350px" height="200px" class="img-fluid justify-content center img-thumbnail mx-auto d-block" alt="">   
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus at nemo cupiditate numquam ipsa ut necessitatibus corrupti rem laboriosam,
-                 nam aut libero iusto doloremque voluptatum. Deleniti fuga atque cumque a.
-            Et, fugit? Blanditiis, obcaecati similique? Sit blanditiis voluptatem nihil alias temporibus deserunt atque, illum, reprehenderit exercitationem
-             nulla officia cumque, consequatur totam. Laboriosam sit tenetur alias odit explicabo animi eligendi quasi.
-            Exercitationem expedita aliquid, corrupti voluptate officiis dicta fuga quidem eum quae repellendus odio nulla, hic amet suscipit repudiandae, 
-            vero dolorum fugiat itaque voluptates aut dignissimos omnis nostrum quod nemo! Odit.
-        </p>
+            <img src="./admin/<?php echo $image ?>" width="350px" height="200px" class="img-fluid justify-content center img-thumbnail mx-auto d-block" alt=""> 
+            <p> <?php echo $content?> </p>
+         
+<!-- comments -->
 
-        <!-- Related Post -->
+<!-- /comments -->
+<!-- Related Post -->
+
         <div class="row justify-content-center">
+
         <h2>Related Post</h2>    
     
         <!-- post -->
+        <?php  
+$select = $dbc -> prepare("SELECT * FROM post 
+                        INNER JOIN category WHERE category.cart_id = ? AND
+                        post.cart_id = category.cart_id  ORDER BY RAND() LIMIT 2  ") ;
+ $select -> bind_param("i", $category); 
+ $select -> execute ();
+ $result= $select ->  get_result();
+        foreach ($result as $post) :
+                    $p_id = $post['p_id'] ;
+                    $title = $post['p_title'] ;
+                    $content = $post['p_content'] ;
+                    $image = $post['p_image'] ;
+                    $category = $post['cart_id'] ;
+                    $keyword = $post['p_keywords'] ;
+                    $author = $post['p_author'] ;
+                    $date = $post['p_date'] ;
+                ?>   
+
             <div class="col-md-5 col-sm-10">
             <div class="row"> 
                 <div class="col-md-3 col-sm-10">
-                     <a href="#"><img src="images/smiling-lady.jpg" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
+                     <a href="news.php?news=<?php echo $p_id ?>"><img src="./admin/<?php echo $image ?>" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
                 </div>
             <div class="col-md-9 col-sm-10 ">
-                <a href=""><h5>Another problem just occured with our education system in nigeria</h5></a>
+                <a href="news.php?news=<?php echo $p_id ?>"><h5><?php echo $title ?></h5></a>
                     </div>              
             </div>
             </div>
+            <?php endforeach ?>
 <!-- //post -->
-
-
-                <!--post  -->
-            <div class="col-md-5 col-sm-10">
-            <div class="row"> 
-                <div class="col-md-3 col-sm-10">
-                     <a href="#"><img src="images/smiling-lady.jpg" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
-                </div>
-            <div class="col-md-9 col-sm-10 ">
-                <a href=""><h5>Another problem just occured with our education system in nigeria</h5></a>
-                    </div>              
-            </div>
-            </div>
-            <!-- //post -->
         </div>
         <!-- // Related Post -->
         <hr>
+
+
+
     <!-- comment  -->
     <div class="row my-4 justify-content-center">
         <h2 class="badges bg-danger">Post  A comment</h2>
 
-        <div class="col-md-10">  <form action="" class="form">
+        <div class="col-md-10">  
+            <form action="" class="form" method="POST">
             <div class="form-group mb-3">
                 <label for="">Full Name:</label>
-                <input type="text" class="form-control " placeholder="Your fullname">
+                <input type="text" name="name" class="form-control " placeholder="Your fullname">
             </div>
 
             <div class="form-group mb-3">
                 <label for="">Email Address:</label>
-                <input type="text" class="form-control " placeholder="Your fullname">
+                <input type="text" name="email" class="form-control " placeholder="Your Email Address">
             </div>
             <div class="form-group mb-3">
                 <label for="Comment">Comment</label>
@@ -104,7 +175,7 @@
             </div>
 
             <div class="form-group">
-                <input  class="btn form-control btn-success" value="Comment" type="submit">
+                <input  class="btn form-control btn-success" name="comment" value="Comment" type="submit">
             </div>
         </form> </div>
        
@@ -115,7 +186,7 @@
 
             <!-- right sidebar -->
        <?php
-       include('inc/rightbar.php')
+       include('inc/category.php')
        ?>
         <!-- //right sidebar -->
             </div>

@@ -4,9 +4,9 @@
     /* text-decoration: none; */
     box-sizing: border-box;
 }
-/* a{
+a{
     text-decoration: none !important;
-} */
+}
 .container-fluid{
     padding-left: 0 !important;
 }

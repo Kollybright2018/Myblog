@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 include_once('inc/db.php');
 require ('function/function.php');
 
@@ -47,11 +45,11 @@ if (!$_SESSION) {
      }
 
 if (empty($error)) {
-  $insert  = $dbc -> prepare("INSERT INTO post (p_title, p_author, p_keywords, p_image, p_content, cart_id, p_status) 
-                        VALUES(?, ?, ?, ?, ?, ?, ?) ");
-  $status = "pending";  
+  $insert  = $dbc -> prepare("INSERT INTO post (p_title, p_author, p_keywords, p_image, p_content, cart_id) 
+                        VALUES(?, ?, ?, ?, ?, ?) ");
+   
   $author= $_SESSION['fname'];                    
-  $insert -> bind_param("sssssis", $title, $author, $keyword, $img_folder, $content, $category, $status  );
+  $insert -> bind_param("sssssi", $title, $author, $keyword, $img_folder, $content, $category );
   if ($insert -> execute() ) {
       move_uploaded_file($image, $img_folder);
       $_SESSION['message'] = " Post Submitted Successfully";
@@ -86,12 +84,13 @@ require('inc/head.php')
       <!-- //sidebar -->
       <!-- Content -->
       <div class="col-md-10 bg-light border">
-        <div class="row bg-primary d-flex flex-row" >
-            <div>
+        <div class="row bg-primary d-flex  justify-content-start" >
+            <div class="col-5">
                 <p>Home</p>
             </div>
-            <div>
-                <p>Log-Out</p>
+            <div class="col-5 ps-5" >
+            <a href="inc/logout.php"><i class="fas fa-power-off text-light">Log Out</i> </a>   
+        
                <!-- <a href="#" class="link">Log Out</a> -->
             </div>
         </div>
@@ -121,7 +120,7 @@ require('inc/head.php')
                         $cart_name= $cart['cart_name'] ;
                         $cart_id = $cart['cart_id'];
                    ?>
-                   <option value="<?php echo $cart_id ?>"><?php echo $cart_id ?></option>
+                   <option value="<?php echo $cart_id ?>"><?php echo $cart_name ?></option>
 
                    <?php endforeach ?>
                </select>

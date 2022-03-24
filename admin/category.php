@@ -1,9 +1,9 @@
 <?php
-session_start();
+include_once('inc/db.php');
 if (!$_SESSION) {
     header('location:index.php');
 }
-include_once('inc/db.php');
+
 require ('function/function.php');
   $error = [];
   $message;

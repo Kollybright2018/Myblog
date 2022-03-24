@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include_once('inc/db.php');
 require ('function/function.php');//   include('include/head.php');
   $error = [];
@@ -17,8 +17,41 @@ if (isset($_GET['delete'])) {
        $delete -> close();
        header('location:post.php');
     }
-}  
+}; 
+
+
+
+
+// Approve
+if (isset($_GET['publish'])) {
+    $p_id = $_GET['publish'];
+    $publ ="published";
+    $published = $dbc -> prepare("UPDATE post SET p_status = ?  WHERE p_id= ?") ;
+    $published-> bind_param("si", $publ, $p_id);
+    if ($published ->execute()) {
+       $message  = "Post Published Succefully";
+       $class= "success";
+       header('location:post.php');
+         }
+}
+
+
+// pending
+if (isset($_GET['draft'])) {
+    $p_id = $_GET['draft'];
+    $dra ="draft";
+    $draft = $dbc -> prepare("UPDATE post SET p_status = ? WHERE p_id= ? ") ;
+    $draft-> bind_param("si", $dra, $p_id);
+    if ($draft ->execute()) {
+       $message  = "Post Drafted Succefully";
+       $class= "info";
+       header('location:post.php');
+         }
+}
+
 ?>
+
+
 
 
 
@@ -71,7 +104,7 @@ require('inc/head.php')
                 <th>Author</th>
                 <th>Date</th>
                 <th class="text-center" colspan="2">Action</th>
-                <!-- <th>Status</th> -->
+                <th>Status</th>
                 </tr>  
             </thead>
             <tbody>
@@ -87,7 +120,7 @@ require('inc/head.php')
                     $keyword = $post['p_keywords'] ;
                     $author = $post['p_author'] ;
                     $date = $post['p_date'] ;
-
+                    $status = $post['p_status'];
 ?>
                 <tr>
 
@@ -101,7 +134,12 @@ require('inc/head.php')
                     <td>  <?php echo $date ?></td>
                     <td> <a href="edit_post.php?edit=<?php echo $p_id ?>"> <i class="fas fa-pen text-success"></i> Edit</a></td>
                     <td><a href="post.php?delete=<?php echo $p_id ?>"> <i class="fas fa-trash text-danger"></i> Delete</a></td>
-                    <!-- <td><a href="post.php?publish=<?php echo $p_id ?>"> <i class="fas fa-pen-alt text-danger"></i> Approve</a></td> -->
+                    <?php if ($status == "draft"):?>
+                    <td> <a href="post.php?publish=<?php echo $p_id ?> "> <i class="fas fa-check text-primary"></i> Publish</a>   </td>
+                    <?php else : ?>
+                        <td> <a href="post.php?draft=<?php echo $p_id ?> "> <i class="fas fa-envelope text-warning"></i> Draft</a>  </td>
+                        <?php endif ?>
+                    
                 </tr>
                 <?php $i++; 
             endforeach; 
