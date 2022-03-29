@@ -1,13 +1,20 @@
-<div class="col-md-3 ">
+
+<div class="col-md-3 col-sm-10">
                 <div class="row justify-content-center bg-light">
                     <h3>Category</h3>
                    
                        <div class="list-group">
+                           <?php
+                       $sel_cart = $dbc -> query("SELECT * FROM category");
+                    foreach ($sel_cart as $cart):
+                        $cart_id= $cart['cart_id'];
+                        $cart_name = $cart['cart_name'];
+                        $c_slug = $cart['c_slug'];                        
+                    ?>
+                      <b> <a href="category.php?cart_id=<?php echo $c_slug ?>" class="list-group-item my-2 bg-info  list-item-group-action"><?php echo $cart_name ?></a>
+                      </b>              
+                    <?php endforeach ?>
                             <hr>
-                           <a href="#" class="list-group-item list-item-group-action">Home</a>
-                           <a href="#" class="list-group-item list-item-group-action">Home</a>
-                           <a href="#" class="list-group-item list-item-group-action">Home</a>
-                           <a href="#" class="list-group-item list-item-group-action">Home</a>
                        </div>
                        <h3 class="pt-4 mt-4">Tags</h3>
                        <hr>
@@ -39,6 +46,7 @@ $select = $dbc -> prepare("SELECT * FROM post
                     $keyword = $post['p_keywords'] ;
                     $author = $post['p_author'] ;
                     $date = $post['p_date'] ;
+                    $slug = $post['slug'];
                 ?>   
 
                     <div class="row "> 
@@ -46,7 +54,7 @@ $select = $dbc -> prepare("SELECT * FROM post
                             <img src="./admin/<?php echo $image ?>" height="150" alt="" class="img-fluid  img-thumbnail">    
                         </div>
                         <div class="col-md-8">
-                             <h5> <a href="news.php?news=<?php echo $p_id ?> "> <?php echo $title ?> </a></h5>
+                             <h5> <a href="news.php?news=<?php echo $slug ?> "> <?php echo $title ?> </a></h5>
                         </div>
                     </div>
                 <?php endforeach ?>

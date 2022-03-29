@@ -29,16 +29,9 @@ require('inc/head.php');
       <!-- //sidebar -->
       <!-- Content -->
       <div class="col-md-10 bg-light border">
-      <div class="row bg-primary d-flex  justify-content-start" >
-            <div class="col-5">
-                <p>Home</p>
-            </div>
-            <div class="col-5 ps-5" >
-            <a href="inc/logout.php"><i class="fas fa-power-off text-light">Log Out</i> </a>   
-        
-               <!-- <a href="#" class="link">Log Out</a> -->
-            </div>
-        </div>
+         <!-- navbar -->
+         <?php require ('inc/navbar.php')?>
+        <!-- //navbar -->
 
         <div class="container">
             <!-- bx row -->

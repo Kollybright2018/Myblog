@@ -1,36 +1,39 @@
 <?php
-session_start();
+
+include_once('inc/db.php');
+require ('function/function.php');
 if (!$_SESSION) {
     header('location:index.php');
 }
-include_once('inc/db.php');
-require ('function/function.php');
   $error = [];
   $message;
 
 // Edit
-$cart_id = $_GET['edit'];
-// $select = $dbc -> prepare (" SELECT * FROM category where cart_id = ? ");
-// $select -> bind_param("i", $cart_id);
-// $select -> execute();
-// $result = $select -> get_result();
-// $count = $result -> fetch_assoc;
-// $cart_name = $get['cart_name'];
+$get_slug = $_GET['edit'];
+$select = $dbc -> prepare (" SELECT * FROM category where c_slug = ? ");
+$select -> bind_param("s", $get_slug);
+$select -> execute();
+$result = $select -> get_result();
+$get = $result -> fetch_assoc();
+$cart_name = $get['cart_name'];
 
     if (isset($_POST['update'])) {
-     if ( empty($_POST['category']) ) {
+     if (empty($_POST['cart_name']) ) {
             $error['empty'] = "The Field cannot empty";
         }else {
-            $category = treat($_POST['category']) ;
+            $category = treat($_POST['cart_name']) ;
+            $slug = substr(str_replace(" ", "-", $category), 0, 20).date("H-i-s");
             $select = $dbc -> prepare (" SELECT * FROM category where cart_name = ? ");
             $select -> bind_param("s", $category);
             $select -> execute();
             $result = $select -> get_result();
             $count = $result -> num_rows;
-            // die;
             if ($count == 0 ) {
-                $update = $dbc -> prepare("UPDATE category SET cart_name = ? WHERE cart_id = ? ");
-                $update -> bind_param("si", $category, $cart_id );
+                $update = $dbc -> prepare("UPDATE category SET cart_name = ?, c_slug = ? WHERE c_slug = ? ");
+      
+                $update -> bind_param("sss", $category, $slug, $get_slug  );
+            //        echo  $category ;
+            //  die;
                 if ($update -> execute()) {
                     $message = "Category Updated";
                     header('location:category.php');
@@ -60,15 +63,7 @@ $cart_id = $_GET['edit'];
       <!-- //sidebar -->
       <!-- Content -->
       <div class="col-md-10 bg-light border">
-        <div class="row bg-primary d-flex flex-row" >
-            <div>
-                <p>Home</p>
-            </div>
-            <div>
-                <p>Log-Out</p>
-               <!-- <a href="#" class="link">Log Out</a> -->
-                   </div>
-        </div>
+      <?php include('inc/navbar.php') ?>
 
         <!-- container -->
         <div class="container">
@@ -82,7 +77,7 @@ $cart_id = $_GET['edit'];
                             </div>
                             <div class="card-body">
                                  <div class="form-group">
-                            <input type="text" name="category" class="form-control" value=" <?php echo $name ?> " id="">
+                            <input type="text" name="cart_name" class="form-control" value=" <?php echo $cart_name ?> " id="">
                                      </div>
                             </div>
                           <div class="card-footer">

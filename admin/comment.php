@@ -4,6 +4,36 @@
   $error = [];
   $message;
 
+// Delete Multiple
+if (isset($_POST['delete'])) {
+       
+  if (empty($_POST['del'])) {
+    $error['delete_e'] = "You didnt select any item";
+     }else {
+        $delete = $_POST['del'];
+        foreach ($delete as $key ) {
+          $select_post= $dbc -> prepare( "SELECT * FROM comment WHERE c_id = ?");
+          $select_post -> bind_param( "i", $key);
+          $select_post -> execute();
+          $get = $select_post -> get_result();
+          foreach ($get as $comment) {
+            $c_id = $comment['c_id'];
+            $delete_comment= $dbc -> prepare( "DELETE FROM  comment WHERE c_id = ?");
+            $delete_comment -> bind_param( "i", $c_id);
+            if ($delete_post -> execute()) {
+              $message  = "Cmment Deleted Succefully";
+              $class= "danger";
+            }
+          }
+   
+        }
+    }
+ 
+} 
+
+
+
+
  
 //   Delete Comment
 if (isset($_GET['delete'])) {
@@ -30,7 +60,6 @@ if (isset($_GET['approve'])) {
          }
 }
 
-
 // pending
 if (isset($_GET['pending'])) {
     $c_id = $_GET['pending'];
@@ -45,8 +74,6 @@ if (isset($_GET['pending'])) {
 }
 
 ?>
-
-
 
 <html lang="en">
 <head>
@@ -69,16 +96,10 @@ require('inc/head.php')
       <!-- //sidebar -->
       <!-- Content -->
       <div class="col-md-10 bg-light border">
-      <div class="row bg-primary " >
-            <div class="col-md-5 p-3">
-                <p><span class="text-light fas fa-home">Home</span> </p>
-            </div>
-            <div class="col-md-5 p-3 " >
-            <a href="inc/logout.php"><i class="fas fa-power-off text-light">Log Out</i> </a>   
-               <!-- <a href="#" class="link">Log Out</a> -->
-            </div>
-        </div>
 
+      <!-- navbar -->
+      <?php require ('inc/navbar.php')?>
+        <!-- //navbar -->
         <!-- container -->
         <div class="container ">
             <div class="table-responsive"> 
@@ -111,7 +132,7 @@ require('inc/head.php')
         
 ?>
         <tr>
-                    <td><?php echo $i?></td>
+                    <td><input type="checkbox" name="del[]" value="<?php echo $cate['cart_id']; ?>"><?php echo $i?></td>
                     <td><?php echo $name ?></td>
                     <td> <?php echo $email ?> </td>
                     <td><?php echo $p_title?></td>
@@ -123,9 +144,17 @@ require('inc/head.php')
                     <?php else : ?>
                         <td> <a href="comment.php?pending=<?php echo $c_id ?> "> <i class="fas fa-envelope text-warning"></i> Draft</a>  </td>
                         <?php endif ?>
+                  
                 </tr>
+                
                 <?php $i++; endforeach?>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td class="text-center">  <span class="fas fa-trash btn btn-danger ">  <b> <input  class=" btn btn-danger" name="delete" type="submit" value="Delete Select"> </b> </span></td>
+                
+                </tr>
+            </tfoot>
         </table>
         </div>
         </div>

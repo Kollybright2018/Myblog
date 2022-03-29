@@ -18,12 +18,11 @@ if (!$_SESSION) {
     $path= pathinfo($basename, PATHINFO_EXTENSION);
     $img_folder = "images/".$basename;
 
-
-
     if (empty($_POST['title'])) {
          $error['title_e'] = "Title cannot be empty";
       }else {
         $title = treat($_POST['title']) ;
+        $slug = substr(str_replace(" ", "-", $title), 0, 20).date("H-i-s");
       }
 
       if (empty($_POST['category'])) {
@@ -44,12 +43,13 @@ if (!$_SESSION) {
        $content = treat($_POST['content']) ;
      }
 
+
 if (empty($error)) {
-  $insert  = $dbc -> prepare("INSERT INTO post (p_title, p_author, p_keywords, p_image, p_content, cart_id) 
-                        VALUES(?, ?, ?, ?, ?, ?) ");
+  $insert  = $dbc -> prepare("INSERT INTO post (p_title, p_author, p_keywords, p_image, p_content, cart_id, slug) 
+                        VALUES(?, ?, ?, ?, ?, ?, ?) ");
    
   $author= $_SESSION['fname'];                    
-  $insert -> bind_param("sssssi", $title, $author, $keyword, $img_folder, $content, $category );
+  $insert -> bind_param("sssssis", $title, $author, $keyword, $img_folder, $content, $category, $slug );
   if ($insert -> execute() ) {
       move_uploaded_file($image, $img_folder);
       $_SESSION['message'] = " Post Submitted Successfully";
@@ -64,7 +64,7 @@ if (empty($error)) {
 // die;
 ?>
 
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <?php
@@ -84,16 +84,9 @@ require('inc/head.php')
       <!-- //sidebar -->
       <!-- Content -->
       <div class="col-md-10 bg-light border">
-        <div class="row bg-primary d-flex  justify-content-start" >
-            <div class="col-5">
-                <p>Home</p>
-            </div>
-            <div class="col-5 ps-5" >
-            <a href="inc/logout.php"><i class="fas fa-power-off text-light">Log Out</i> </a>   
-        
-               <!-- <a href="#" class="link">Log Out</a> -->
-            </div>
-        </div>
+           <!-- navbar -->
+      <?php require ('inc/navbar.php')?>
+        <!-- //navbar -->
 
         <!-- container -->
         <div class="container">
@@ -132,11 +125,11 @@ require('inc/head.php')
 
            <div class="form-group mt-2">
                <label for="">Image</label>
-               <input type="file" name="image" class="form-control">
+               <input type="file"  name="image" class="form-control">
            </div>
            <div class="form-group mt-2">
                <label for="">Post Descriptions</label>
-               <textarea name="content" id="" class="form-control" cols="30" rows="10"></textarea>
+               <textarea  name="content" class="content" ></textarea>
            </div>
            <div class="form-group my-3">
                <input type="submit" name="submit" class="form-control btn btn-success" value="Submit">
@@ -150,7 +143,36 @@ require('inc/head.php')
         <!-- //container row -->
 
   </div>
-
-  <script src="../bootstrap/js/bootstrap.min.js"></script>
+  <!-- <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
+    <script src="tinymce/js/tinymce/tinymce.min.js"></script>
+     <script>
+     tinymce.init({
+  selector: '.content',
+plugins: [
+    'autolink',
+    'autoresize',
+    'codesample',
+    'link',
+    'lists',
+    'media',
+    'powerpaste',
+    'table',
+    'image',
+    'quickbars',
+    'codesample',
+    'help'
+  ],
+  // toolbar: true,
+  // quickbars_insert_toolbar: 'quicktable image media codesample',
+  // quickbars_selection_toolbar: 'bold italic underline | formatselect | bullist numlist | blockquote quicklink',
+  // contextmenu: 'undo redo | inserttable | cell row column deletetable | help',
+  // powerpaste_word_import: 'clean',
+  // powerpaste_html_import: 'clean',
+  
+});
+    </script>
+ 
+   
 </body>
+
 </html>

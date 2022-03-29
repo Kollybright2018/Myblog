@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include_once('inc/db.php');
 require ('function/function.php');
 

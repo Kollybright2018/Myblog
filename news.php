@@ -1,59 +1,26 @@
 <?php
 require ('./admin/inc/db.php');
-require  ('./admin/function/function.php');
+require ('./admin/function/function.php');
 if (!isset($_GET['news'])) {
     header('location:index.php');
 }
-$p_id = $_GET['news'];
-  $error = [];
+$slug = $_GET['news'];
+
+// $select_post = mysqli_query($dbc, "SELECT * FROM post WHERE slug = '$slug' ");
+// $get = mysqli_fetch_row($select_post);
+// print_r($get);
+// die;
+$error = [];
   $message;
-
-  if (isset($_POST['comment'])) {
-  
-    // $image =$_FILES['image']['tmp_name'];
-    // $img_size =$_FILES['image']['size'];
-    // $basename= basename($_FILES['image']['name']);
-    // $path= pathinfo($basename, PATHINFO_EXTENSION);
-    // $img_folder = "images/".$basename;
-
-    if (empty($_POST['name'])) {
-         $error['name_e'] = "Name cannot be empty";
-      }else {
-        $name = treat($_POST['name']) ;
-      }
-
-      if (empty($_POST['email'])) {
-        $error['email_e'] = "Please Enter YOur mail";
-     }else {
-       $email = treat($_POST['email']) ;
-     }
-
-     if (empty($_POST['comment'])) {
-        $error['comment_e'] = "Comment cannot be empty";
-     }else {
-       $comment = treat($_POST['comment']) ;
-     }
-
-if (empty($error)) {
-  $insert  = $dbc -> prepare("INSERT INTO comment (c_name, c_email, p_id, comment) 
-                        VALUES(?, ?, ?, ?) ");                  
-  $insert -> bind_param("ssis", $name, $email, $p_id, $comment );
-  if ($insert -> execute() ) {
-      $message = " Post Submitted Successfully";
-      $class = "info";
-      header("location:news.php?news=" .$p_id)   ; 
-  }
-   
-}
-  }
 
 // Fetch News Data
 $select = $dbc -> prepare("SELECT * FROM post 
-INNER JOIN category WHERE post.p_id = ? AND post.cart_id = category.cart_id ") ;
-$select -> bind_param("i", $p_id); 
+INNER JOIN category WHERE post.slug = ? AND post.cart_id = category.cart_id ") ;
+$select -> bind_param("s", $slug); 
 $select -> execute ();
 $result= $select ->  get_result() ;
 $post = $result -> fetch_assoc();
+
 $p_id = $post['p_id'] ;
 $title = $post['p_title'] ;
 $content = $post['p_content'] ;
@@ -62,7 +29,54 @@ $category = $post['cart_id'] ;
 $keyword = $post['p_keywords'] ;
 $author = $post['p_author'] ;
 $date = $post['p_date'] ;
-$cart_name = $post['cart_name'];
+$cart_name1 = $post['cart_name'];
+$slug_p = $post['slug'];
+
+// print_r($post);
+// die;
+if (isset($_POST['comment'])) {
+  
+    // $image =$_FILES['image']['tmp_name'];
+    // $img_size =$_FILES['image']['size'];
+    // $basename= basename($_FILES['image']['name']);
+    // $path= pathinfo($basename, PATHINFO_EXTENSION);
+    // $img_folder = "images/".$basename;
+$name = $_POST['name'];
+    if ($_POST['name']=="") {
+         $name= "Anonymous";
+      }else {
+        $name = treat($_POST['name']) ;
+      }
+
+      if (empty($_POST['email'])) {
+        $error['email_e'] = "Please Enter YOur mail";
+     }else {
+       $email = $_POST['email'];
+     }
+
+     if (empty($_POST['comment_text'])) {
+        $error['text_e'] = "Comment cannot be empty";
+     }else {
+       $text = treat($_POST['comment_text']) ;
+     }
+
+if (empty($error)) {
+  $insert  = $dbc -> prepare("INSERT INTO comment (c_name, c_email, p_id, comment) 
+                        VALUES(?, ?, ?, ?) ");                  
+  $insert -> bind_param("ssis", $name, $email, $p_id, $text );
+
+  if ($insert -> execute() ) {
+      $message = " Post Submitted Successfully";
+      $class = "info";
+    //   echo ' <script> alert("I Have issue")  </script>';
+      header("location:news.php?news=".$slug)   ; 
+  }else {
+      echo ' <script> alert("I Have issue")  </script>';
+  }
+   
+}
+  }
+
 
 ?>
 <html lang="en">
@@ -91,25 +105,25 @@ $cart_name = $post['cart_name'];
                 <div class="news"> 
                       <h1 class="text-center p-2 my-3 text-primary">News Update</h1>
                 </div>
-  
                 <!-- News Content  -->
                 <!-- News Content -->
         <div class="col-md-9 col-sm-10 border">
                     
-        
         <span>
                 Posted By : <i> <?php echo $author?> </i> <br>
                 <?php echo $date?>  <br>
 
             </span>
-            <span class="badge bg-danger"> <?php echo $cart_name ?></span>
-            <h2><a href="news.php?news= <?php echo $p_id?>"><?php echo $title?></a> </h2>
+            <span class="badge bg-danger"> <?php echo $cart_name1 ?></span>
+            <h2><a href="news.php?news=<?php echo $slug_p?>"><?php echo $title?></a> </h2>
 
             <img src="./admin/<?php echo $image ?>" width="350px" height="200px" class="img-fluid justify-content center img-thumbnail mx-auto d-block" alt=""> 
-            <p> <?php echo $content?> </p>
+           <?php echo html_entity_decode($content)
          
+            ?> 
+         <hr>
 <!-- comments -->
-
+    <?php require ("inc/comment.php")?>
 <!-- /comments -->
 <!-- Related Post -->
 
@@ -134,15 +148,16 @@ $select = $dbc -> prepare("SELECT * FROM post
                     $keyword = $post['p_keywords'] ;
                     $author = $post['p_author'] ;
                     $date = $post['p_date'] ;
+                    $slug= $post['slug'];
                 ?>   
 
             <div class="col-md-5 col-sm-10">
             <div class="row"> 
                 <div class="col-md-3 col-sm-10">
-                     <a href="news.php?news=<?php echo $p_id ?>"><img src="./admin/<?php echo $image ?>" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
+                     <a href="news.php?news=<?php echo $slug ?>"><img src="./admin/<?php echo $image ?>" class="img-fluid img-thumbnail" width="100" height="50" alt=""></a>
                 </div>
             <div class="col-md-9 col-sm-10 ">
-                <a href="news.php?news=<?php echo $p_id ?>"><h5><?php echo $title ?></h5></a>
+                <a href="news.php?news=<?php echo $slug ?>"><h5><?php echo $title ?></h5></a>
                     </div>              
             </div>
             </div>
@@ -151,9 +166,6 @@ $select = $dbc -> prepare("SELECT * FROM post
         </div>
         <!-- // Related Post -->
         <hr>
-
-
-
     <!-- comment  -->
     <div class="row my-4 justify-content-center">
         <h2 class="badges bg-danger">Post  A comment</h2>
@@ -171,7 +183,7 @@ $select = $dbc -> prepare("SELECT * FROM post
             </div>
             <div class="form-group mb-3">
                 <label for="Comment">Comment</label>
-                <textarea name="comment" id="" cols="30" class="form-control" rows="10"></textarea>
+                <textarea name="comment_text" id="" cols="30" class="form-control" rows="10"></textarea>
             </div>
 
             <div class="form-group">

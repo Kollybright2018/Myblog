@@ -8,12 +8,6 @@ require ('inc/head.php');
 ?>
     <title>Home</title>
 </head>
-<style>
-    a{
-    text-decoration: none;
-    color: orangered;
-}
-</style>
 <body>
     <!-- <header>
         <div class="container-fluid bg-danger">
@@ -97,9 +91,9 @@ require ('inc/head.php');
                 <h1>Subscribe to Our newsletter</h1>
                 <p>Lorem olor sit amet cdam soluta commodi molestiae provident. Sit ati est?</p>
                 <div class="form">
-                    <div class="form-group">
+                    <div class="input-group">
                         <input type="text" class="form-control" placeholder="Enter Your email">
-                        <input type="submit" class="text-center btn mt-2 inline-btn btn-success">
+                        <input type="submit" value="Subscribe" class="btn btn-success">
                     </div>
                 </div>
             </div>

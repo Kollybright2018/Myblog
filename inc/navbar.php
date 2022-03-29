@@ -22,22 +22,22 @@
     </nav> -->
 
 
-
-    <nav class="navbar  navbar-expand-sm bg-dark  navbar-dark">
+<nav class="navbar  navbar-expand-sm bg-dark  navbar-dark">
                 <div class="container-fluid justify-content-center">
                     
                <ul class="navbar-nav d-flex justify-content-center">
-                    <li class=" px-4 nav-item"><a class="active px-4 nav-link" href="index.php">Home</a></li>
+                    <li class=" px-3 nav-item"><a class="active nav-link" href="index.php">Home</a></li>
                     <?php
                     $sel_cart = $dbc -> query("SELECT * FROM category");
                     foreach ($sel_cart as $cart):
                         $cart_id= $cart['cart_id'];
                         $cart_name = $cart['cart_name'];
+                        $slug = $cart['c_slug'];
                         $_SESSION['cart_name'] =  $cart['cart_name']; 
                     ?>
-                    <li class=" px-4 nav-item"><a class=" px-4 nav-link" href="category.php?cart_id=<?php echo $cart_id ?>"><?php echo $cart_name ?></a></li>
+                    <li class="px-3  nav-item"><a class=" nav-link" href="category.php?cart_id=<?php echo $slug ?>"><?php echo $cart_name ?></a></li>
                     <?php endforeach ?>
-                    <li class=" px-4 nav-item"><a class=" px-4 nav-link" href="#footer">Contact Us.</a></li>
+                    <li class="px-3  nav-item"><a class="  nav-link" href="#footer">Contact Us.</a></li>
 
                 </ul>
                  </div>

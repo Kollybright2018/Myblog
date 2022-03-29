@@ -34,7 +34,7 @@
 
        <li class="nav-item mt-3 ">
            <a href="category.php" class="nav-link ">
-               <i class="fab fa-whatsapp mx-2 icon"></i>
+               <i class="fas fa-tags mx-2 icon"></i>
                <span class="text-light icon-t ">Categories</span>
            </a>
 
