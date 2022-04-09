@@ -1,3 +1,4 @@
+<div class="container">
 <div class="row bg-primary " >
             <div class="col-md-4 p-3">
               <strong> <a href="dashboard.php" class="text-light p-3" ><span class=" ms-3 fas fa-home"> </span> Home</a> </strong>
@@ -19,4 +20,5 @@
             <strong> <a href="inc/logout.php" class="text-danger p-3" ><span class=" ms-3 fas fa-power-off"> </span> Log Out</a> </strong>   
                <!-- <a href="#" class="link">Log Out</a> -->
             </div>
+        </div>
         </div>

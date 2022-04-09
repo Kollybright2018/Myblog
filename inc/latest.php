@@ -4,7 +4,7 @@
                          INNER JOIN category WHERE post.cart_id = category.cart_id AND post.p_status='published' ORDER BY post.p_id DESC Limit 3 ") ;
               ?> 
 
-            <div class="col-md-3  col-sm-10">
+            <div class="col-md-3  col-10">
             <div class="row justify-content-center bg-light">
                 <h3>Latest News</h3>
              <?php  
@@ -29,7 +29,7 @@
                        
                     </div>
                     <div class="col-md-10 p-3">
-                        <p><?php echo substr( $content, 0, 100)?>?.....       
+                        <p><?php echo html_entity_decode(substr( $content, 0, 100)) ?>?.....       
                                <a href="news.php?news=<?php echo $slug?>" class="">Read More</a></p>
                        <strong>Post By  <span class="text-danger"> <?php echo $author?> <br> </span> <i>  <?php echo $date?> </i></strong>
                        <span class="badge bg-danger"><?php echo $cart_name?></span>

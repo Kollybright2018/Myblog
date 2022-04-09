@@ -1,5 +1,5 @@
 
-<div class="col-md-3 col-sm-10">
+<div class="col-md-3 col-10">
                 <div class="row justify-content-center bg-light">
                     <h3>Category</h3>
                    

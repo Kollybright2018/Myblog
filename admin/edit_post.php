@@ -59,8 +59,8 @@ if (empty($error)) {
                 WHERE  p_id = ? ");  
   $author= $_SESSION['fname'];  
  
-  $insert -> bind_param("sssssisi", $title, $author, $keyword, $img_folder, $content, $cart_id, $slug, $p_id  );
-  
+  $insert -> bind_param("sssssisi", $title, $author, $keyword, $img_folder, $content, $cart_id, $slug, $get['p_id']  );
+
   if ($insert -> execute() ) {
       move_uploaded_file($image, $img_folder);
       $_SESSION['message'] = " Updated Submitted Successfully";

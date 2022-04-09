@@ -104,6 +104,7 @@ require('inc/head.php')
         <div class="container ">
             <div class="table-responsive"> 
         <table class="table table-bordered table-striped table-hover table-dark">
+          <form>
             <thead>
                 <tr>
                 <th>S/N</th>
@@ -155,6 +156,7 @@ require('inc/head.php')
                 
                 </tr>
             </tfoot>
+                    </form>
         </table>
         </div>
         </div>
